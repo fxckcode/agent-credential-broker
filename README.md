@@ -1,6 +1,13 @@
 # `agent-cred` — Capability-Based Credential Broker & MCP Server for Coding Agents
 
-`agent-cred` lets coding agents (Claude Code, Codex, Gemini CLI, Cursor, OpenCode, Antigravity, and `rsc-harness` / software-factory pipelines) perform policy-approved HTTP/API calls **without exposing raw credentials** to the agent conversation, prompt context, environment variables, process arguments (`argv`), repository files, or command output.
+[![CI](https://github.com/fxckcode/agent-credential-broker/actions/workflows/ci.yml/badge.svg)](https://github.com/fxckcode/agent-credential-broker/actions/workflows/ci.yml)
+[![Latest Release](https://img.shields.io/github/v/release/fxckcode/agent-credential-broker?display_name=tag&sort=semver)](https://github.com/fxckcode/agent-credential-broker/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Node.js 22+](https://img.shields.io/badge/Node.js-22%2B-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+
+**Let agents use approved APIs without handing them your secrets.**
+
+`agent-cred` is a local, capability-based credential broker with a CLI and MCP server for coding agents, software factories, and `rsc-harness`. It performs policy-approved HTTP requests while keeping raw credentials out of prompts, environment variables, process arguments, repository files, and returned output.
 
 > [!IMPORTANT]
 > **Security Truth (Same-UID Boundary)**
@@ -43,6 +50,12 @@ Try the self-contained local demo using synthetic credentials against an ephemer
 ```bash
 npm run demo
 ```
+
+---
+
+## Project status
+
+`agent-cred` is an early open-source release (`0.1.0`) focused on safe local HTTP capabilities for coding agents. Read the [changelog](./CHANGELOG.md), [roadmap](./ROADMAP.md), and [security policy](./SECURITY.md) before adopting it for production credentials.
 
 ---
 

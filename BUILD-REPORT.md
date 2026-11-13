@@ -70,3 +70,4 @@ Wire `agent-cred mcp` into the local software-factory (`zellia-factory` / `facto
 - Added CI workflow at `.github/workflows/ci.yml`.
 - Hardened DNS validation to inspect all resolved addresses before connecting.
 - Replaced absolute local `file://` links in public documentation with repository-relative links.
+- Added public-facing project positioning: badges, release status, changelog, roadmap, and code of conduct.
