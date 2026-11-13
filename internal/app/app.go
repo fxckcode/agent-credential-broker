@@ -10,8 +10,10 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/fxckcode/agent-credential-broker/internal/broker"
+	"github.com/fxckcode/agent-credential-broker/internal/curl"
 	"github.com/fxckcode/agent-credential-broker/internal/policystore"
 	"github.com/fxckcode/agent-credential-broker/internal/secrets"
 )
@@ -53,6 +55,8 @@ func Run(args []string, stdout, stderr io.Writer) int {
 		return runInspect(options, rest, stdout, stderr)
 	case "request":
 		return runRequest(options, rest, stdout, stderr)
+	case "curl":
+		return runCurl(options, rest, stdout, stderr)
 	case "exec", "run":
 		return writeError(stderr, errors.New("generic secret-injecting exec is rejected by design; use request, curl, or MCP"))
 	default:
@@ -322,6 +326,40 @@ func runRequest(options contextOptions, args []string, stdout, stderr io.Writer)
 	}
 	if err := writeJSON(stdout, result); err != nil {
 		return writeError(stderr, err)
+	}
+	return 0
+}
+
+func runCurl(options contextOptions, args []string, stdout, stderr io.Writer) int {
+	request, err := curl.Parse(args)
+	if err != nil {
+		return writeError(stderr, err)
+	}
+	service, err := createBroker(options)
+	if err != nil {
+		return writeError(stderr, err)
+	}
+	var timeout time.Duration
+	if request.TimeoutSeconds > 0 {
+		timeout = time.Duration(request.TimeoutSeconds * float64(time.Second))
+	}
+	result, err := service.Execute(context.Background(), broker.Request{
+		Profile: request.Profile, Method: request.Method, URL: request.URL,
+		Headers: request.Headers, Body: request.Body, Timeout: timeout,
+		AllowHTTPLocalhost: request.AllowHTTPLocalhost || options.allowHTTP,
+	})
+	if err != nil {
+		return writeError(stderr, err)
+	}
+	if request.IncludeHeaders {
+		for name, value := range result.Headers {
+			_, _ = fmt.Fprintf(stdout, "%s: %s\n", name, value)
+		}
+		_, _ = fmt.Fprintln(stdout)
+	}
+	_, _ = fmt.Fprint(stdout, result.Body)
+	if result.Body != "" && !strings.HasSuffix(result.Body, "\n") {
+		_, _ = fmt.Fprintln(stdout)
 	}
 	return 0
 }
