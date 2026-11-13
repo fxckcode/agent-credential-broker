@@ -34,12 +34,12 @@ func TestRunDoctorDoesNotInspectSecrets(t *testing.T) {
 	}
 }
 
-func TestRunRejectsUnknownCommand(t *testing.T) {
+func TestRunRejectsGenericExec(t *testing.T) {
 	var stdout, stderr bytes.Buffer
-	if code := Run([]string{"exec"}, &stdout, &stderr); code != 2 {
-		t.Fatalf("Run() code = %d, want 2", code)
+	if code := Run([]string{"exec"}, &stdout, &stderr); code != 1 {
+		t.Fatalf("Run() code = %d, want 1", code)
 	}
-	if !strings.Contains(stderr.String(), "unknown command") {
+	if !strings.Contains(stderr.String(), "generic secret-injecting exec is rejected") {
 		t.Fatalf("stderr = %q", stderr.String())
 	}
 }
