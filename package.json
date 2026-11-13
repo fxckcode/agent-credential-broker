@@ -1,6 +1,6 @@
 {
   "name": "agent-cred",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Capability-based credential broker and MCP server for coding agents. Performs policy-checked HTTP requests without exposing raw secrets to prompts, argv, environment, or output.",
   "type": "module",
   "bin": {

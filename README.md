@@ -55,7 +55,7 @@ npm run demo
 
 ## Project status
 
-`agent-cred` is an early open-source release (`0.1.0`) focused on safe local HTTP capabilities for coding agents. Read the [changelog](./CHANGELOG.md), [roadmap](./ROADMAP.md), and [security policy](./SECURITY.md) before adopting it for production credentials.
+`agent-cred` is an early open-source release (`0.2.0`) focused on safe local HTTP capabilities for coding agents. Read the [changelog](./CHANGELOG.md), [roadmap](./ROADMAP.md), and [security policy](./SECURITY.md) before adopting it for production credentials.
 
 ---
 

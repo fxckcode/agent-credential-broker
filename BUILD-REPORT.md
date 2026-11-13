@@ -71,3 +71,13 @@ Wire `agent-cred mcp` into the local software-factory (`zellia-factory` / `facto
 - Hardened DNS validation to inspect all resolved addresses before connecting.
 - Replaced absolute local `file://` links in public documentation with repository-relative links.
 - Added public-facing project positioning: badges, release status, changelog, roadmap, and code of conduct.
+
+## 6. Release 0.2.0 Verification Additions
+
+- Added `.github/workflows/windows.yml` for Node 22 on `windows-latest`.
+- Added `Dockerfile.test` and verified `docker build` + `docker run` locally on Linux.
+- Added `docs/AGENT-COMPATIBILITY.md` with local CLI versions and honest smoke results.
+- Smoke tests passed for OpenCode 2.2.5, Pi 1.3.0, Agy 1.5.6 using Gemini 4 Argon Low, and Codex 0.160.0.
+- Cursor Agent, Claude Code, and Gemini CLI were detected but not authenticated; no credentials were supplied.
+- Cursor GUI was not run because this shell has no X display.
+- A Windows container was not started because the local Docker daemon is Linux; Windows containers require a Windows daemon or VM.
