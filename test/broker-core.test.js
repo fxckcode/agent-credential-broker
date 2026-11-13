@@ -19,7 +19,7 @@ function makeTempDir(prefix = 'agent-cred-core-') {
   return fs.mkdtempSync(path.join(os.tmpdir(), prefix));
 }
 
-test('PolicyStore enforces strict schema, atomic writes, and 0600 permissions', (t) => {
+test('PolicyStore enforces strict schema, atomic writes, and restrictive permissions where the platform exposes POSIX mode bits', (t) => {
   const tmpDir = makeTempDir();
   t.after(() => fs.rmSync(tmpDir, { recursive: true, force: true }));
 
@@ -51,8 +51,10 @@ test('PolicyStore enforces strict schema, atomic writes, and 0600 permissions', 
   assert.equal(loaded.name, 'github-issues');
   assert.deepEqual(loaded.allowedHosts, ['api.github.com']);
 
-  const stat = fs.statSync(policyFile);
-  assert.equal(stat.mode & 0o777, 0o600, 'policy file must be 0600');
+  if (process.platform !== 'win32') {
+    const stat = fs.statSync(policyFile);
+    assert.equal(stat.mode & 0o777, 0o600, 'policy file must be 0600 on POSIX platforms');
+  }
 
   // Fail closed on wildcard host
   assert.throws(
