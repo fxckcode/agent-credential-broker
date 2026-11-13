@@ -37,7 +37,7 @@ Checks: adapter unit tests and Windows CI.
 - T2 — Port policy, atomic storage, redaction, and HTTP transport with security tests; route: inline; status: complete; commit: `4848fbc` + `273c2ef` + `6c64374`.
 - T3 — Port OS credential-store adapters and CLI commands; route: inline; status: complete; commit: `7e08c9a` + `8ab02b4` + `4f293e2` + `fc2bd29` (stores and init/import/list/inspect/request/curl/doctor wired; MCP remains).
 - T4 — Port MCP stdio server and compatibility tests; route: inline; status: complete; commit: `9fcb360` + `ede9304`.
-- T5 — Run Node-vs-Go differential checks, cross-builds, agent smoke tests, and publish native release; route: inline; status: in progress; commit: none.
+- T5 — Run Node-vs-Go differential checks, cross-builds, agent smoke tests, and publish native release; route: inline; status: complete; commit: `8dde0f1` + `eaf34b1` + `c343612` + `fc69a1a`.
 
 ## Log
 
