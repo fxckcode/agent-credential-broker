@@ -42,6 +42,13 @@ type Response struct {
 	Profile string            `json:"profile"`
 }
 
+type ConnectionResult struct {
+	OK      bool   `json:"ok"`
+	Profile string `json:"profile"`
+	Status  int    `json:"status,omitempty"`
+	Error   string `json:"error,omitempty"`
+}
+
 func New(policies *policystore.Store, store secrets.Store) (*Broker, error) {
 	if policies == nil || store == nil {
 		return nil, fmt.Errorf("broker requires policy and secret stores")
@@ -63,6 +70,31 @@ func (b *Broker) ListProfiles() ([]policy.Profile, error) {
 
 func (b *Broker) InspectProfile(name string) (policy.Profile, error) {
 	return b.policies.GetProfile(name)
+}
+
+func (b *Broker) TestConnection(ctx context.Context, profileName string, allowHTTP bool) ConnectionResult {
+	profile, err := b.policies.GetProfile(profileName)
+	if err != nil {
+		return ConnectionResult{Profile: profileName, Error: err.Error()}
+	}
+	if profile.TestRequest == nil {
+		return ConnectionResult{Profile: profile.Name, Error: "profile has no testRequest"}
+	}
+	result, err := b.Execute(ctx, Request{Profile: profile.Name, Method: profile.TestRequest.Method, URL: profile.TestRequest.URL, AllowHTTPLocalhost: allowHTTP})
+	if err != nil {
+		return ConnectionResult{Profile: profile.Name, Error: err.Error()}
+	}
+	validStatus := false
+	for _, expected := range profile.TestRequest.ExpectedStatuses {
+		if result.Status == expected {
+			validStatus = true
+			break
+		}
+	}
+	if !validStatus {
+		return ConnectionResult{Profile: profile.Name, Status: result.Status, Error: fmt.Sprintf("unexpected HTTP status %d", result.Status)}
+	}
+	return ConnectionResult{OK: true, Profile: profile.Name, Status: result.Status}
 }
 
 func (b *Broker) Execute(ctx context.Context, input Request) (Response, error) {

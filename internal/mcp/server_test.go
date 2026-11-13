@@ -50,7 +50,7 @@ func TestServeInitializeAndListTools(t *testing.T) {
 	}
 	result := response["result"].(map[string]any)
 	tools := result["tools"].([]any)
-	if len(tools) != 3 {
+	if len(tools) != 4 {
 		t.Fatalf("tools = %d", len(tools))
 	}
 }
