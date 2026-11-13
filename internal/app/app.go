@@ -14,6 +14,7 @@ import (
 
 	"github.com/fxckcode/agent-credential-broker/internal/broker"
 	"github.com/fxckcode/agent-credential-broker/internal/curl"
+	"github.com/fxckcode/agent-credential-broker/internal/mcp"
 	"github.com/fxckcode/agent-credential-broker/internal/policystore"
 	"github.com/fxckcode/agent-credential-broker/internal/secrets"
 )
@@ -57,6 +58,8 @@ func Run(args []string, stdout, stderr io.Writer) int {
 		return runRequest(options, rest, stdout, stderr)
 	case "curl":
 		return runCurl(options, rest, stdout, stderr)
+	case "mcp":
+		return runMCP(options, stdout, stderr)
 	case "exec", "run":
 		return writeError(stderr, errors.New("generic secret-injecting exec is rejected by design; use request, curl, or MCP"))
 	default:
@@ -360,6 +363,21 @@ func runCurl(options contextOptions, args []string, stdout, stderr io.Writer) in
 	_, _ = fmt.Fprint(stdout, result.Body)
 	if result.Body != "" && !strings.HasSuffix(result.Body, "\n") {
 		_, _ = fmt.Fprintln(stdout)
+	}
+	return 0
+}
+
+func runMCP(options contextOptions, stdout, stderr io.Writer) int {
+	service, err := createBroker(options)
+	if err != nil {
+		return writeError(stderr, err)
+	}
+	server, err := mcp.New(service)
+	if err != nil {
+		return writeError(stderr, err)
+	}
+	if err := server.Serve(os.Stdin, stdout); err != nil {
+		return writeError(stderr, err)
 	}
 	return 0
 }
