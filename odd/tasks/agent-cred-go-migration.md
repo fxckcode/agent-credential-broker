@@ -33,8 +33,8 @@ Checks: adapter unit tests and Windows CI.
 
 ## Tasks
 
-- T1 — Define Go module, executable layout, and protocol/domain types; route: inline; status: pending; commit: none.
-- T2 — Port policy, atomic storage, redaction, and HTTP transport with security tests; route: inline; status: pending; commit: none.
+- T1 — Define Go module, executable layout, and protocol/domain types; route: inline; status: complete; commit: `d3585df` + `3abb45f`.
+- T2 — Port policy, atomic storage, redaction, and HTTP transport with security tests; route: inline; status: in progress; commit: `4848fbc` + `273c2ef` (redaction and policy storage slices complete).
 - T3 — Port OS credential-store adapters and CLI commands; route: inline; status: pending; commit: none.
 - T4 — Port MCP stdio server and compatibility tests; route: inline; status: pending; commit: none.
 - T5 — Run Node-vs-Go differential checks, cross-builds, agent smoke tests, and publish native release; route: inline; status: pending; commit: none.
