@@ -1,0 +1,12 @@
+node_modules/
+npm-debug.log*
+.env
+.env.*
+!.env.example
+.agent-cred/dev-secrets/
+.agent-cred/audit.jsonl
+.agent-cred/*.local.json
+coverage/
+.DS_Store
+agy-output.log
+agy.stderr

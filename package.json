@@ -1,0 +1,42 @@
+{
+  "name": "agent-cred",
+  "version": "0.1.0",
+  "description": "Capability-based credential broker and MCP server for coding agents. Performs policy-checked HTTP requests without exposing raw secrets to prompts, argv, environment, or output.",
+  "type": "module",
+  "bin": {
+    "agent-cred": "./bin/agent-cred.js"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./mcp": "./src/mcp/server.js"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "lint": "node scripts/lint.js",
+    "doctor": "node bin/agent-cred.js doctor",
+    "demo": "node scripts/demo.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "skills/",
+    "docs/",
+    "README.md",
+    "SECURITY.md",
+    "CONTRIBUTING.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "agent-security",
+    "credential-broker",
+    "mcp",
+    "least-privilege",
+    "secrets",
+    "rsc-harness",
+    "claude-code"
+  ],
+  "license": "MIT"
+}
