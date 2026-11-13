@@ -95,5 +95,6 @@ Wire `agent-cred mcp` into the local software-factory (`zellia-factory` / `facto
 - Synthetic import/list/redaction smoke: passed with no secret output.
 ## 8. Native Windows Credential Manager Runtime Verification
 
-- Added a Windows-only synthetic round-trip test for `CredWriteW`/`CredReadW`/`CredDeleteW`.
-- Removed `setup-go` cache configuration because the module has no `go.sum`.
+- Windows Credential Manager round-trip test executed successfully in Windows CI using a synthetic credential.
+- Node-vs-Go differential probes matched the required exit codes and exposed four MCP tools in both implementations.
+- The Windows runner still emitted a non-blocking setup-go cache annotation; no product test failed.

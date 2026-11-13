@@ -7,7 +7,6 @@ All notable changes to `agent-cred` are documented here.
 ### Fixed
 
 - Added a Windows-only Credential Manager round-trip test that writes, reads, and deletes a synthetic credential in the Windows CI runner.
-- Removed Go module cache configuration from CI because this repository has no `go.sum`; this eliminates the non-failing cache warning.
 
 ## [0.3.0] - 2026-11-13
 
