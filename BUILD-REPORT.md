@@ -81,3 +81,4 @@ Wire `agent-cred mcp` into the local software-factory (`zellia-factory` / `facto
 - Cursor Agent, Claude Code, and Gemini CLI were detected but not authenticated; no credentials were supplied.
 - Cursor GUI was not run because this shell has no X display.
 - A Windows container was not started because the local Docker daemon is Linux; Windows containers require a Windows daemon or VM.
+- Initial Windows CI exposed a POSIX mode-bit assertion (`438 !== 384`); release `v0.2.1` made that test platform-aware and Windows CI then passed.
