@@ -25,21 +25,21 @@ npm test
 npm run doctor
 
 # 2. Initialize non-secret policy skeleton (.agent-cred/profiles.json, .env.example, .gitignore)
-npx agent-cred init
+node bin/agent-cred.js init
 
 # 3. Import a synthetic test credential (human runs this in their own terminal; never prints secret)
 cp .env.example .env.local
-npx agent-cred import \
+node bin/agent-cred.js import \
   --profile example-github-readonly \
   --env-file .env.local \
   GITHUB_READONLY_TOKEN=github_pat_readonly
 rm .env.local
 
 # 4. Inspect profile policy metadata (no secrets returned)
-npx agent-cred inspect --profile example-github-readonly
+node bin/agent-cred.js inspect --profile example-github-readonly
 
 # 5. Execute a policy-checked HTTPS request
-npx agent-cred request \
+node bin/agent-cred.js request \
   --profile example-github-readonly \
   --method GET \
   --url https://api.github.com/rate_limit
