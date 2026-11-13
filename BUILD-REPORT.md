@@ -93,4 +93,7 @@ Wire `agent-cred mcp` into the local software-factory (`zellia-factory` / `facto
 - macOS arm64 cross-build: passed.
 - MCP initialize/tools/list/tools/call smoke: passed.
 - Synthetic import/list/redaction smoke: passed with no secret output.
-- Windows Credential Manager adapter: cross-compiled; runtime verification still requires a Windows host or runner.
+## 8. Native Windows Credential Manager Runtime Verification
+
+- Added a Windows-only synthetic round-trip test for `CredWriteW`/`CredReadW`/`CredDeleteW`.
+- Removed `setup-go` cache configuration because the module has no `go.sum`.
