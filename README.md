@@ -3,7 +3,7 @@
 [![CI](https://github.com/fxckcode/agent-credential-broker/actions/workflows/ci.yml/badge.svg)](https://github.com/fxckcode/agent-credential-broker/actions/workflows/ci.yml)
 [![Latest Release](https://img.shields.io/github/v/release/fxckcode/agent-credential-broker?display_name=tag&sort=semver)](https://github.com/fxckcode/agent-credential-broker/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![Node.js 22+](https://img.shields.io/badge/Node.js-22%2B-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Go 1.24+](https://img.shields.io/badge/Go-1.24%2B-00ADD8?logo=go&logoColor=white)](https://go.dev/)
 
 **Let agents use approved APIs without handing them your secrets.**
 
@@ -19,43 +19,43 @@
 ## Quick Start
 
 ```bash
-# 1. Install and run checks
-npm install
-npm test
-npm run doctor
+# 1. Build and verify the native executable
+go test ./...
+go build -o agent-cred ./cmd/agent-cred
 
 # 2. Initialize non-secret policy skeleton (.agent-cred/profiles.json, .env.example, .gitignore)
-node bin/agent-cred.js init
+./agent-cred init
 
 # 3. Import a synthetic test credential (human runs this in their own terminal; never prints secret)
 cp .env.example .env.local
-node bin/agent-cred.js import \
+./agent-cred import \
   --profile example-github-readonly \
   --env-file .env.local \
   GITHUB_READONLY_TOKEN=github_pat_readonly
 rm .env.local
 
 # 4. Inspect profile policy metadata (no secrets returned)
-node bin/agent-cred.js inspect --profile example-github-readonly
+./agent-cred inspect --profile example-github-readonly
 
 # 5. Execute a policy-checked HTTPS request
-node bin/agent-cred.js request \
+./agent-cred request \
   --profile example-github-readonly \
   --method GET \
   --url https://api.github.com/rate_limit
 ```
 
-Try the self-contained local demo using synthetic credentials against an ephemeral loopback server:
+Run the local synthetic verification suite:
 
 ```bash
-npm run demo
+go test ./...
+go vet ./...
 ```
 
 ---
 
 ## Project status
 
-`agent-cred` is an early open-source release (`0.2.0`) focused on safe local HTTP capabilities for coding agents. Read the [changelog](./CHANGELOG.md), [roadmap](./ROADMAP.md), and [security policy](./SECURITY.md) before adopting it for production credentials.
+`agent-cred` is the native Go release (`0.3.0`) for safe local HTTP capabilities for coding agents. Read the [changelog](./CHANGELOG.md), [roadmap](./ROADMAP.md), and [security policy](./SECURITY.md) before adopting it for production credentials.
 
 ---
 
@@ -63,12 +63,14 @@ npm run demo
 
 | Module | File | Responsibility |
 | :--- | :--- | :--- |
-| **`PolicyStore`** | [`src/policy-store.js`](./src/policy-store.js) | Validates and persists non-secret profile policies (`.agent-cred/profiles.json`, mode `0600`, atomic writes). Rejects unknown fields, wildcard hosts, and `query` auth schemes. |
-| **`SecretStore`** | [`src/secret-store.js`](./src/secret-store.js) | Stores raw secrets in the OS keychain (`secret-tool` on Linux, `security` on macOS via `stdin`) or an explicit test-only `DevFileSecretStore` (`--store dev-file --allow-dev-store`). |
-| **`Broker`** | [`src/broker.js`](./src/broker.js) | Enforces HTTPS-only default, exact host/method/path allowlists, request/response byte limits, sliding-window rate limits, and local redacted audit logging (`.agent-cred/audit.jsonl`). |
-| **`HttpTransport`** | [`src/http-transport.js`](./src/http-transport.js) | Executes HTTP/HTTPS requests with pinned DNS socket lookup, private/metadata IP SSRF blocking (`169.254.169.254`, RFC1918, ULA), timeout enforcement, and no automatic redirect following. |
-| **`Redactor`** | [`src/redactor.js`](./src/redactor.js) | Strips raw secrets, URL-encoded secrets, base64/base64url variants, Basic auth pairs, standard token shapes (`ghp_`, `github_pat_`, `sk-ant-`), sensitive headers, and profile regexes. |
-| **`McpBrokerServer`** | [`src/mcp/server.js`](./src/mcp/server.js) | Exposes 4 stdio MCP tools (`credential_list_profiles`, `credential_inspect_policy`, `credential_http_request`, `credential_test_connection`) with `<untrusted_api_data>` framing. |
+| **Policy** | [`internal/policy`](./internal/policy) | Validates explicit non-secret profiles and deny-by-default request policy. |
+| **Secret stores** | [`internal/secrets`](./internal/secrets) | Uses Linux Secret Service, macOS Keychain, Windows Credential Manager, or an explicitly acknowledged test-only store. |
+| **Broker** | [`internal/broker`](./internal/broker) | Attaches credentials internally, enforces host/method/path/size/rate policies, and returns redacted responses. |
+| **Transport** | [`internal/transport`](./internal/transport) | Performs bounded HTTP requests with HTTPS enforcement, DNS/IP SSRF checks, timeouts, and no redirects. |
+| **Redaction** | [`internal/redaction`](./internal/redaction) | Removes raw and common encoded secret forms from response data and headers. |
+| **CLI** | [`cmd/agent-cred`](./cmd/agent-cred) | Native executable for policy initialization, credential import, requests, safe curl, diagnostics, and MCP. |
+| **MCP** | [`internal/mcp`](./internal/mcp) | Implements the stdio JSON-RPC server and four brokered tools. |
+| **Legacy oracle** | [`src`](./src) | Temporary Node implementation retained for differential behavior checks during migration. |
 
 ---
 
@@ -118,7 +120,7 @@ npm run demo
 printf 'GITHUB_TOKEN=SYNTH_FAKE_TOKEN_FOR_LOCAL_TESTING_ONLY_12345\n' > .env.test
 
 # Import into OS keychain (or add --store dev-file --allow-dev-store in headless CI tests)
-node bin/agent-cred.js import \
+./agent-cred import \
   --profile example-github-readonly \
   --env-file .env.test \
   GITHUB_TOKEN=github_pat_readonly
@@ -131,7 +133,7 @@ rm .env.test
 `agent-cred curl` parses a safe subset of `curl` flags (`--profile`, `-X`, `-H`, `-d`, `--json`, `-i`, `-s`, `-m`) without a shell and attaches credentials inside the broker:
 
 ```bash
-node bin/agent-cred.js curl \
+./agent-cred curl \
   --profile example-github-readonly \
   -X GET \
   -H "Accept: application/vnd.github+json" \
@@ -209,10 +211,14 @@ See [`SECURITY.md`](./SECURITY.md) and [`docs/THREAT-MODEL.md`](./docs/THREAT-MO
 
 ## Verification Checklist
 
-- [x] `npm test` — Runs unit, security-boundary, and end-to-end local HTTP server tests
-- [x] `npm run lint` — Verifies syntax and checks that `shell: true` and `eval(` are absent
-- [x] `npm run doctor` — Validates Node runtime (`>= 22`), OS keychain binary, and policy permissions
-- [x] `npm run demo` — Runs a local-only synthetic credential demonstration
+- [x] `go test ./...` — Go unit and security-boundary tests
+- [x] `go vet ./...` — Go static analysis
+- [x] `go build ./cmd/agent-cred` — Native executable build
+- [x] `GOOS=windows GOARCH=amd64 go build ./cmd/agent-cred` — Windows executable cross-build
+- [x] `GOOS=darwin GOARCH=arm64 go build ./cmd/agent-cred` — macOS executable cross-build
+- [x] Native MCP `initialize`, `tools/list`, and `tools/call` frames
+- [x] Synthetic credential import and redaction checks
+- [x] Node implementation retained as a differential behavior oracle
 
 ## License
 

@@ -146,7 +146,7 @@ func (b *Broker) Execute(ctx context.Context, input Request) (Response, error) {
 		return Response{}, err
 	}
 	outbound := make(http.Header)
-	outbound.Set("User-Agent", "agent-cred-go/0.3.0-dev")
+	outbound.Set("User-Agent", "agent-cred-go/0.3.0")
 	for name, value := range input.Headers {
 		if strings.EqualFold(name, profile.Credential.HeaderName) || strings.EqualFold(name, "proxy-authorization") {
 			return Response{}, fmt.Errorf("caller cannot override credential headers")

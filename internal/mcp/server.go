@@ -66,7 +66,7 @@ func (s *Server) handle(request rpcRequest) rpcResponse {
 	}
 	switch request.Method {
 	case "initialize":
-		response.Result = map[string]any{"protocolVersion": "2024-11-05", "capabilities": map[string]any{"tools": map[string]any{}}, "serverInfo": map[string]string{"name": "agent-cred", "version": "0.3.0-dev"}}
+		response.Result = map[string]any{"protocolVersion": "2024-11-05", "capabilities": map[string]any{"tools": map[string]any{}}, "serverInfo": map[string]string{"name": "agent-cred", "version": "0.3.0"}}
 	case "ping":
 		response.Result = map[string]any{}
 	case "resources/list":

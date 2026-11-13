@@ -19,7 +19,7 @@ import (
 	"github.com/fxckcode/agent-credential-broker/internal/secrets"
 )
 
-const Version = "0.3.0-dev"
+const Version = "0.3.0"
 
 type contextOptions struct {
 	cwd           string

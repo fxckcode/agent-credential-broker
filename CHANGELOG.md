@@ -2,7 +2,26 @@
 
 All notable changes to `agent-cred` are documented here.
 
-## [0.2.0] - 2026-11-13
+## [0.3.0] - 2026-11-13
+
+### Added
+
+- Native Go executable; Node.js is no longer required at runtime.
+- Cross-platform build targets for Linux, Windows, and macOS.
+- Windows Credential Manager adapter through the native Windows credential APIs.
+- Linux Secret Service and macOS Keychain adapters behind a common Go interface.
+- Native Go policy validation, atomic policy storage, SSRF-aware HTTP transport, redaction, rate limiting, and request bounds.
+- Native Go CLI commands: `init`, `import`, `list`, `inspect`, `request`, `curl`, and `doctor`.
+- Native Go MCP stdio server with four brokered tools.
+- Differential migration boundary retaining the Node implementation as a temporary behavioral oracle.
+
+### Security
+
+- Generic secret-injecting `exec` remains rejected by design.
+- Credentials never enter agent argv, environment, prompts, repository files, or MCP responses.
+- MCP API responses are explicitly framed as untrusted external data.
+
+## [0.2.1] - 2026-11-13
 
 ### Added
 

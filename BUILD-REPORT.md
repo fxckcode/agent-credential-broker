@@ -82,3 +82,15 @@ Wire `agent-cred mcp` into the local software-factory (`zellia-factory` / `facto
 - Cursor GUI was not run because this shell has no X display.
 - A Windows container was not started because the local Docker daemon is Linux; Windows containers require a Windows daemon or VM.
 - Initial Windows CI exposed a POSIX mode-bit assertion (`438 !== 384`); release `v0.2.1` made that test platform-aware and Windows CI then passed.
+
+## 7. Native Go Release 0.3.0
+
+- Native CLI and MCP executable built from `cmd/agent-cred`.
+- `go test ./...`: passed.
+- `go vet ./...`: passed.
+- Linux native build: passed.
+- Windows amd64 cross-build: passed.
+- macOS arm64 cross-build: passed.
+- MCP initialize/tools/list/tools/call smoke: passed.
+- Synthetic import/list/redaction smoke: passed with no secret output.
+- Windows Credential Manager adapter: cross-compiled; runtime verification still requires a Windows host or runner.
